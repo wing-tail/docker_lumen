@@ -4,32 +4,38 @@ services:
         build:
             context: ./docker/nginx
         volumes:
-            - $HOME/docker/lumen-sample:/var/www
+            - ./lumen:/var/www
+            - ./docker/nginx/log:/var/log/nginx
         ports:
-            - "8080:80"
+            - "8081:80"
         depends_on:
             - php
     php:
         build:
             context: ./docker/php
         volumes:
-            - $HOME/docker/lumen-sample:/var/www
+            - ./lumen:/var/www
         depends_on:
             - redis
             - mysql
         environment:
             DB_HOST: mysql
+            DB_DATABASE: lumen
+            DB_USERNAME: root
+            DB_PASSWORD: root
             REDIS_HOST: redis
     mysql:
         image: mysql:5.7
         volumes:
-            - $HOME/docker/lumen-sample/docker/mysql:/var/lib/mysql
+            - lumen-sample:/var/lib/mysql
         environment:
             - MYSQL_ROOT_PASSWORD=root
             - MYSQL_DATABASE=lumen
         ports:
-            - "33061:3306"
+            - "33060:3306"
     redis:
         image: redis:5.0
         ports:
-            - "63791:6379"
+            - "63790:6379"
+volumes:
+    lumen-sample:
